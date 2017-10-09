@@ -46,35 +46,69 @@ function callSwitch(){
 
 //'my-tweets'--show last 20 tweets & when created in terminal
 function twitterApp(){
-   console.log("Input: " + inputCommand);   
+	console.log("Input: " + inputCommand);   
 
-   var client = new Twitter(keys.twitterKeys);
+	var client = new Twitter(keys.twitterKeys);
 
-   var params = {
-      screen_name: 'odom_liri',
-      count: 20
-   };
+	var params = {
+	  screen_name: 'odom_liri',
+	  count: 20
+	};
 
-   //Create Tweet
-   client.post('statuses/update', {status: inputCommand},  function(error, tweet, response) {
-      if (error){
-         console.log('error', error);
-         return;
-      };   
-     console.log("Tweet: " + tweet);  // Tweet body 
-   });
+	if (inputCommand === "") {
+		//Display 20 most recent Tweets
+		client.get('statuses/user_timeline', params, function(error, tweets, response) {
+			if (error){
+				console.log('error', error);
+				return;
+			};
 
-   //Display 20 most recent Tweets
-   client.get('statuses/user_timeline', params, function(error, tweets, response) {
-      if (error){
-         console.log('error', error);
-         return;
-      };
+			for (t = 0; t < tweets.length; t++){
+				console.log("Tweet Log: " + tweets[t].text + ", Created On: " + tweets[t].created_at); 
+			}
+		}); 
+	} else {
+		//Create Tweet
+		client.post('statuses/update', {status: inputCommand}, function(error, tweet, response) {
+			if (error){
+			    console.log('error', error);
+			    return;
+			}; 
+			console.log("Tweet: " + tweet.text);  // Tweet body 
 
-      for (t = 0; t < tweets.length; t++){
-         console.log("Tweet: " + tweets[t].text + ", Created On: " + tweets[t].created_at); 
-      }
-   });  
+			//Display 20 most recent Tweets
+			client.get('statuses/user_timeline', params, function(error, tweets, response) {
+				if (error){
+					console.log('error', error);
+					return;
+				};
+
+				for (t = 0; t < tweets.length; t++){
+					console.log("Tweet Log: " + tweets[t].text + ", Created On: " + tweets[t].created_at); 
+				}
+			});			
+		})			
+   	};
+   // //Create Tweet
+   // client.post('statuses/update', {status: inputCommand}, function(error, tweet, response) {
+   //    if (error){
+   //       console.log('error', error);
+   //       return;
+   //    }; 
+   //   //console.log("Tweet: " + tweet);  // Tweet body 
+   // });
+
+   // //Display 20 most recent Tweets
+   // client.get('statuses/user_timeline', params, function(error, tweets, response) {
+   //    if (error){
+   //       console.log('error', error);
+   //       return;
+   //    };
+
+   //    for (t = 0; t < tweets.length; t++){
+   //       console.log("Tweet Log: " + tweets[t].text + ", Created On: " + tweets[t].created_at); 
+   //    }
+   // });  
 };
 
 
